@@ -92,28 +92,32 @@ resource "aws_route_table_association" "public_subnet_asso" {
 }
 
 resource "aws_eks_cluster" "my_cluster" {
-  cluster_name = local.cluster_name
-  cluster_version = "1.24"
-  vpc_id = aws_vpc.main.id
-  subnet_ids = aws_subnet.private_subnets.id
-  cluster_endpoint_public_access = true
-  eks_managed_node_group_defaults = {
-    ami_type = "AL2_x86_64"
+  name     = "my-eks-cluster"
+  role_arn = aws_iam_role.eks_cluster.arn
+
+  vpc_config {
+    subnet_ids = aws_subnet.private_subnets.*.id
   }
-  eks_managed_node_groups = {
-    one = {
-      name = "node-group-1"
-      instance_types = ["t2.micro"]
-      min_size = 1
-      max_size = 3
-      desired_size = 2
-    }
-    two = {
-      name = "node-group-2"
-      instance_types = ["t2.micro"]
-      min_size = 1
-      max_size = 2
-      desired_size = 1
-    }
-  }
+}
+
+resource "aws_iam_role" "eks_cluster" {
+  name = "eks-cluster-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks_cluster" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.eks_cluster.name
 }
