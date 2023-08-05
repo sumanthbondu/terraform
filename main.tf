@@ -16,23 +16,23 @@ output "EIP"{
     value = aws_eip.elasticip.public_ip
 }
 
-resource "aws_security_group" "webtraffic" {
-    name = "Allow HTTPS"
-
-    ingress{
-        from_port = 443
-        to_port = 443
-        protocol = "TCP"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    egress{
-        from_port = 443
-        to_port = 443
-        protocol = "TCP"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
+resource "aws_vpc" "main" {
+ cidr_block = "10.0.0.0/16"
+ 
+ tags = {
+   Name = "Project VPC"
+ }
 }
 
-Harshitha Weds Prajwal
+variable "public_subnet_cidrs" {
+ type        = list(string)
+ description = "Public Subnet CIDR values"
+ default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+}
+ 
+variable "private_subnet_cidrs" {
+ type        = list(string)
+ description = "Private Subnet CIDR values"
+ default     = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+}
 
