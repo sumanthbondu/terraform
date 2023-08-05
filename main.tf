@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_instance" "ec2"{
     ami = "ami-024fc608af8f886bc"
     instance_type = "t2.micro"
-    security_groups = [aws.aws_security_group.webtraffic.naem]
+    security_groups = [aws.aws_security_group.webtraffic.name]
 }
 
 resource "aws_eip" "elasticip"{
