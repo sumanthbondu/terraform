@@ -32,4 +32,7 @@ resource "aws_security_group" "webtraffic" {
         protocol = "TCP"
         cidr_blocks = ["0.0.0.0/0"]
     }
-}.fdvdvssdvdwafweg
+}
+
+Harshitha Weds Prajwal
+
